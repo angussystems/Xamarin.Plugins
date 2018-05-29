@@ -84,7 +84,7 @@ namespace Plugin.Messaging
 
                 if (email.Attachments.Count > 0)
                 {
-                    var targetSdk = ResolvePackageTargetSdkVersion();
+                    //var targetSdk = ResolvePackageTargetSdkVersion();
 
                     var attachments = email.Attachments.Cast<EmailAttachment>().ToList();
 
@@ -92,7 +92,8 @@ namespace Plugin.Messaging
                     foreach (var attachment in attachments)
                         if (attachment.File == null)
                         {
-                            if (targetSdk < 24)
+                            // Kashif: FileProvider doesn't work correctly on Android 5.x and below.
+                            if (Build.VERSION.SdkInt < BuildVersionCodes.M)
                             {
                                 var uri = Uri.Parse("file://" + attachment.FilePath);
                                 uris.Add(uri);
@@ -107,7 +108,8 @@ namespace Plugin.Messaging
                         }
                         else
                         {
-                            if (targetSdk < 24)
+                            // Kashif: FileProvider doesn't work correctly on Android 5.x and below.
+                            if (Build.VERSION.SdkInt < BuildVersionCodes.M)
                             {
                                 var uri = Uri.FromFile(attachment.File);
                                 uris.Add(uri);
